@@ -1,0 +1,59 @@
+* {
+  box-sizing: border-box;
+}
+
+.component-fileupload {
+    position: relative;
+}
+
+div[data-item-img].pdf-file::before {
+    background-image: url("./icon-pdf.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    content: "";
+    display: inline-block; 
+    height: 50px;
+    width: 50px;
+}
+
+.list-preview-files {
+    list-style: none;
+}
+
+.item {
+    align-items: center;
+    display: flex;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+
+.item .item-info{
+    align-items: center;
+    display: flex;
+    flex: 6;
+}
+
+.item .item-info .item-info__file {
+    margin-left: 10px;
+}
+
+.item .item-info .item-info__file  span {
+    font-weight: 700;
+    position: relative;
+    display: block;
+}
+
+
+.item .item-options{
+    flex: 1;
+}
+
+.thumbnail-image {
+    display: inline-block;
+}
+
+.thumbnail-image img {    
+    height: 80px;
+    width: 80px;       
+}
+
