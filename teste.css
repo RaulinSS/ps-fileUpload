@@ -12,7 +12,7 @@
 }
 
 .inputfile + label {
-    background-color: #f9f9f9;
+    background-color: #f6f6f6;
     color: #41b320;
     text-shadow: none;
 }
@@ -27,4 +27,62 @@
     display: inline-block;
     overflow: hidden;
     padding: 0.625rem 1.25rem;
+
+    font-family: Arial;
+    border: none;
+    border-top: .1em solid rgba(0,0,0,.05);
+    border-left: .1em solid rgba(0,0,0,.1);
+    border-bottom: .1em solid rgba(0,0,0,.2);
+    border-right: .1em solid rgba(0,0,0,.1);
+    border-radius: .2em;
+    background-image: linear-gradient(transparent 20%,rgba(0,0,0,.1));
+}
+
+.list-preview-files {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: 800px;
+}
+
+
+.list-preview-files li.file {
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    min-height: 50px;
+}
+
+li[data-item] .info-file {    
+    flex: 0 1 50%;
+}
+
+span[data-item-size] {
+    margin-left: 10px;
+}
+/*
+li[data-item] .size {
+    flex: 0 1 15%;
+    text-align: right;
+}*/
+
+li[data-item] .actions {
+    flex: 0 1 35%;
+    margin-right: 20px;
+    text-align: right;
+}
+
+li[data-item] .actions .item-action {
+    padding: 0 5px;
+}
+
+.thumbnail-image {
+    line-height: 0px;
+    flex: 0 1 15%;
+}
+
+.thumbnail-image img {    
+    height: 60px;
+    width: 60px;       
 }

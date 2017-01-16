@@ -16,10 +16,6 @@ div[data-item-img].pdf-file::before {
     width: 50px;
 }
 
-.list-preview-files {
-    list-style: none;
-}
-
 .item {
     align-items: center;
     display: flex;
@@ -48,12 +44,4 @@ div[data-item-img].pdf-file::before {
     flex: 1;
 }
 
-.thumbnail-image {
-    display: inline-block;
-}
-
-.thumbnail-image img {    
-    height: 80px;
-    width: 80px;       
-}
 
