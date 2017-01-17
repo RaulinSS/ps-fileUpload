@@ -1,3 +1,4 @@
+"use strict";
 (function($){
     function Fileupload(element,options){
         this.element = element;
@@ -10,16 +11,17 @@
     Fileupload.prototype = {
         init : function(){
             this.attachmentFiles = [];
+            this.filesWithError = 0;
             this.maxSizeAllowed = this.options.maxSize ? parseInt(this.options.maxSize) : 3; //in MB , default 3MB
             this.maxAmountAllowed = this.options.amount ? parseInt(this.options.amount) : 3; // default 3 arquivos
             this.validFormats = ["image/jpeg","image/gif","image/png","application/pdf"];
             this.imageFormats = ["image/jpeg","image/gif","image/png"];
-            this.idItemKey = 0;
+            this.idItemKey = 0;            
 
             return this;            
         },
 
-        initializeEvents : function(){           
+        initializeEvents : function(){
             this.setTemplateItem();            
         },
 
@@ -27,11 +29,11 @@
             this.templateItem = document.getElementById(this.options.idTemplate).textContent;
         },
 
-        build: function(event){                                   
+        build: function(event){            
             const self = this, filesAttached = self.element.files; 
                 
-            if(filesAttached){
-                for(let property in filesAttached){   
+            if(filesAttached){                
+                for(let property in filesAttached){
                     if(property && isNaN(property)){
                         continue;
                     }
@@ -40,21 +42,23 @@
                     const fileAttached = filesAttached[property];
                     
                     //adicionamos uma nova propiedade ao objeto file com o peso formatado para leitura.
-                    fileAttached.formattedSize =  calculateFileSize(fileAttached.size);
-                    
+                    fileAttached.formattedSize = calculateFileSize(fileAttached.size);
+                                        
                     //se valida o tamanho maximo de arquivos permitidos
-                    if(!this.canAttachFile(this.maxAmountAllowed)){                    
+                    if(!this.canAttachFile(this.maxAmountAllowed)){
                         console.log("o máximo de arquivos que pode anexar é: " + this.maxAmountAllowed);
                         continue;
                     }
 
                     //validamos se o arquivo anexado tem o peso permitido.
                     if(!this.isAllowedSize(fileAttached.size)){
-                        console.log("o arquivo " + fileAttached.name + " não tem o peso permitido.");
+                        console.log("o arquivo " + fileAttached.name + " não tem o peso permitido.");                        
+                        //adicionamos ao contador de erros
+                        this.filesWithError++;
 
-                        //trigger Error
-                        $(document).trigger("error.ps.fileUpload",[fileAttached,{nome:"raulito"}]);
-
+                        //trigger error
+                        //this: componente             
+                        $(document).trigger("error.ps.fileUpload",[fileAttached,this]);
                         continue;
                     }
 
@@ -62,19 +66,20 @@
                     if(!this.isAllowedType(fileAttached.type)){
                         console.log("o arquivo" + fileAttached.name + " não tem o formato permitido.");
 
+                        //adicionamos ao contador de erros
+                        this.filesWithError++;
+
                         //trigger Error
-                        $(document).trigger("error.ps.fileUpload",[fileAttached,{nome:"raulito"}]);
-
-                        console.log("termineee isAllowedSize");
-
+                        //this: componente
+                        $(document).trigger("error.ps.fileUpload",[fileAttached,this]);
                         continue;
                     }
 
                     //criamos um identificador inteiro para cada arquivo.
                     const key = this.idItemKey++;
-                                        
+                                                            
                     //adicionamos o arquivo na lista de arquivos anexados
-                    this.attachmentFiles.push({key : key, file : fileAttached});
+                    this.attachmentFiles.push({key: key, file: fileAttached});
 
                     //criamos o template do arquivo anexado
                     const templateItem = this.createItem(key,fileAttached);
@@ -100,6 +105,11 @@
 
                     this.renderItem(self.options.target,templateItem)
                 }
+                //limpamos o valor do inputfile utilizado pelo componente ápos de anexar os arquivos.
+                this.element.value = "";
+                
+                //se desabilita se o componente não é válido. 
+                this.element.disabled = !this.canAttachFile(this.maxAmountAllowed);
             }
         },
 
@@ -136,9 +146,12 @@
                         }
                     })
                 }    
+
+                //validamos a quantiade de arquivos anexados para habilitar/desabilitar o componente
+                this.element.disabled = !this.canAttachFile(this.maxAmountAllowed);
             }                     
         },
-        
+                
         isAllowedSize : function(filesize){
             const maxSizeinBytes = convertMegabytesToBytes(this.maxSizeAllowed);
             return maxSizeinBytes >= filesize;
@@ -156,8 +169,9 @@
             return typeFile == "application/pdf";
         },
         
-        canAttachFile : function(maxAmountAllowedComponent){
-            return this.attachmentFiles.length < maxAmountAllowedComponent
+        canAttachFile : function(maxAmountAllowedComponent){      
+            //se valida a quantidade de files anexados e a quantidade de files anexados com erro            
+            return this.attachmentFiles.length + this.filesWithError < maxAmountAllowedComponent;
         },
 
         getAllAttachmentFiles : function(){
@@ -247,8 +261,7 @@
     document.addEventListener("change",function($event){        
         const target = $event.target;
         if(target && target.type == "file" && target.hasAttribute("data-fileupload")){
-            const _self = target;
-            console.log("init dentro do click do file ....");
+            const _self = target;            
             _self.fileuploadEngine('build');
             return;
         }

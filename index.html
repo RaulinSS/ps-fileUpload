@@ -9,13 +9,35 @@
 
 <body>
     <!-- file 1 -->
-    
-
-    <!-- file 2 -->
+    <p>
+        Digitalize ou tire uma foto do comprovante de entrega, podendo ser o código de rastreio dos Correios,
+        comprovante de entrega da transportadora ou comprovante de disponibilização do serviço. (máx 2 arquivos)
+    </p>
     <div>
-        <ul class ="list-preview-files" id="list-preview-files2"></ul>
+        <ul class ="list-preview-files" id="list-preview-files"></ul>
+    </div>    
+    <div class="component-fileupload">           
+        <input type ="file" name="userDocument" id="userDocument" class = "inputfile"
+        data-target ="list-preview-files"    
+        data-id-Template = "data-template-fileUpload"
+        data-amount = "2"        
+        data-fileupload 
+        multiple accept= ".gif,.jpg,.png,.pdf">
+        <label for="userDocument">Procurar documentos</label>
+        <span style="display:block;">Serão aceitos JPG, GIF, PNG e PDF de até 3 MB cada.</span>
     </div>
 
+    <hr style="margin:20px 0px;">
+
+    <!-- file 2 -->
+    <p>
+        Digitalize ou timre uma foto do comprovante de pagamento, podendo ser fatura do cartão de crédito, boleto bancário,
+        ou extrato bancário. (máx 5 arquivos)
+    </p>
+
+    <div>
+        <ul class ="list-preview-files" id="list-preview-files2"></ul>
+    </div>    
     <div class="component-fileupload">           
         <input type ="file" name="userDocument2" id="userDocument2" class = "inputfile"
         data-target ="list-preview-files2"        
@@ -24,6 +46,7 @@
         data-fileupload 
         multiple accept= ".gif,.jpg,.png,.pdf">
         <label for="userDocument2">Procurar documentos</label>
+        <span style="display:block;">Serão aceitos JPG, GIF, PNG e PDF de até 3 MB cada.</span>
     </div>
     <!-- template -->
     <noscript id ="data-template-fileUpload">
