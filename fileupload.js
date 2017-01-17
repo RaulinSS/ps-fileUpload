@@ -37,7 +37,10 @@
                     }
 
                     //se obtem o arquivo anexado e sua informacao         
-                    const fileAttached = filesAttached[property];           
+                    const fileAttached = filesAttached[property];
+                    
+                    //adicionamos uma nova propiedade ao objeto file com o peso formatado para leitura.
+                    fileAttached.formattedSize =  calculateFileSize(fileAttached.size);
                     
                     //se valida o tamanho maximo de arquivos permitidos
                     if(!this.canAttachFile(this.maxAmountAllowed)){                    
@@ -50,7 +53,7 @@
                         console.log("o arquivo " + fileAttached.name + " não tem o peso permitido.");
 
                         //trigger Error
-                        $(document).trigger("error.ps.fileUpload",[fileAttached]);
+                        $(document).trigger("error.ps.fileUpload",[fileAttached,{nome:"raulito"}]);
 
                         continue;
                     }
@@ -60,7 +63,9 @@
                         console.log("o arquivo" + fileAttached.name + " não tem o formato permitido.");
 
                         //trigger Error
-                        $(document).trigger("error.ps.fileUpload",[fileAttached]);
+                        $(document).trigger("error.ps.fileUpload",[fileAttached,{nome:"raulito"}]);
+
+                        console.log("termineee isAllowedSize");
 
                         continue;
                     }
@@ -103,8 +108,8 @@
             
             templateItem.innerHTML = this.templateItem;
             templateItem.querySelector("[data-item]").setAttribute("data-item-key", parseInt(key));
-            templateItem.querySelector("[data-item-filename]").innerHTML = itemInfo.name;
-            templateItem.querySelector("[data-item-size]").innerHTML = calculateFileSize(itemInfo.size).join(" ");
+            templateItem.querySelector("[data-item-filename]").innerHTML = itemInfo.name;        
+            templateItem.querySelector("[data-item-size]").innerHTML = itemInfo.formattedSize.join(" ");
 
             templateItem.querySelector("[data-delete]").addEventListener("click", function($event){
                 self.removeItem(key);
@@ -115,7 +120,7 @@
 
         removeItem: function(key){
             const itemKey = parseInt(key);
-            const identifierItem = "[data-item-key=" + "'" + key + "'" + "]";
+            const identifierItem = "[data-item-key=" + "'" + itemKey + "'" + "]";
             const idParentItem = "#" + this.options.target;
             const itemList = document.querySelector(idParentItem + " " + identifierItem);
 
