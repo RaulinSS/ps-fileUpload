@@ -4,6 +4,7 @@
 
 .component-fileupload {
     position: relative;
+    margin: 10px 0;
 }
 
 div[data-item-img].pdf-file::before {

@@ -2,16 +2,16 @@
 (function(){
     document.addEventListener("DOMContentLoaded",function($event){                                
         //se cria um escuta para o error do fileUpload
-        $(document).on("error.ps.fileUpload",function($event,fileWithError,component){     
+        $(document).on("error.ps.fileUpload",function($event,errorType,fileWithError,component){     
             const file = fileWithError ? fileWithError : void(0);
-            createFileWithError(file,component);  
+            createFileWithError(errorType,file,component);  
         })
         
         let idIncrementalError = 0;
 
-        const createFileWithError = function(file,component){
+        const createFileWithError = function(errorType,file,component){
             
-            if(!file || !component)
+            if(!errorType || !file || !component )
                 return;
                                     
             const container = document.createElement("div");
@@ -32,6 +32,9 @@
             if(visualizeOption)
                 visualizeOption.parentElement.removeChild(visualizeOption);
 
+            /* se adiciona a mensagem de erro */            
+            addMessageErrorToItem(itemList,errorType,component);
+
             container.querySelector("[data-delete]").addEventListener("click", function($event){            
                 removeItem(file.IdError,component);
             },false);
@@ -47,10 +50,7 @@
             }            
 
             idIncrementalError++;
-            
-            //limpamos o valor do inputfile utilizado pelo componente
-            component.element.value = "";
-                        
+                                                
             //validamos a quantiade de arquivos anexados para habilitar/desabilitar o componente
             component.isValid = isValidComponent(component);
 
@@ -81,6 +81,33 @@
                 return false;
             }
             return true;
+        };
+
+        const addMessageErrorToItem = function(itemList,errorType,component){
+            if(!itemList || !errorType || !component){
+                throw Error("error na função addMessageErrorToItem");
+            }
+            
+            const msgErrorSize = "Seu arquivo ultrapassou o tamanho permitido, envie um arquivo de até " + component.maxSizeAllowed + "MB";
+            const msgErrorFormat = "Seu arquivo não está no formato correto (JPG, GIF, PNG e PDF)";
+            const _span = document.createElement("span");
+            
+            switch(errorType){
+                case "size":
+                        _span.textContent = msgErrorSize;       
+                    break;
+                case "format":
+                        _span.textContent = msgErrorFormat;                                             
+                    break; 
+                default:                        
+                    break;                
+            }
+
+            //se adiciona a classe no span criado
+            _span.classList.add("file-error-message");
+
+            //se adiciona a mensagem na lista
+            itemList.appendChild(_span);
         };
     })  
 }())

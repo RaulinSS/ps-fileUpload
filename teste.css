@@ -62,6 +62,18 @@
 
 .list-preview-files li.error-file {
     border: 1px solid red;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.list-preview-files li.error-file .file-error-message{
+    bottom: -20px;
+    color: red;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    left: 0px;
+    position: absolute;    
+    width: 100%;        
 }
 
 li[data-item] .info-file {    

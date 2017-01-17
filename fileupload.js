@@ -37,13 +37,13 @@
                     if(property && isNaN(property)){
                         continue;
                     }
-
+                    
                     //se obtem o arquivo anexado e sua informacao         
                     const fileAttached = filesAttached[property];
                     
                     //adicionamos uma nova propiedade ao objeto file com o peso formatado para leitura.
                     fileAttached.formattedSize = calculateFileSize(fileAttached.size);
-                                        
+                    
                     //se valida o tamanho maximo de arquivos permitidos
                     if(!this.canAttachFile(this.maxAmountAllowed)){
                         console.log("o máximo de arquivos que pode anexar é: " + this.maxAmountAllowed);
@@ -52,17 +52,17 @@
 
                     //validamos se o arquivo anexado tem o peso permitido.
                     if(!this.isAllowedSize(fileAttached.size)){
-                        console.log("o arquivo " + fileAttached.name + " não tem o peso permitido.");                        
+                        console.log("o arquivo " + fileAttached.name + " não tem o peso permitido.");                    
                         //adicionamos ao contador de erros
                         this.filesWithError++;
 
                         //trigger error
                         //this: componente             
-                        $(document).trigger("error.ps.fileUpload",[fileAttached,this]);
+                        $(document).trigger("error.ps.fileUpload",["size",fileAttached,this]);
                         continue;
                     }
 
-                    //validamos se o arquivo anexado é do tipo permitido.
+                    //validamos se o arquivo anexado é do formato permitido.
                     if(!this.isAllowedType(fileAttached.type)){
                         console.log("o arquivo" + fileAttached.name + " não tem o formato permitido.");
 
@@ -71,7 +71,7 @@
 
                         //trigger Error
                         //this: componente
-                        $(document).trigger("error.ps.fileUpload",[fileAttached,this]);
+                        $(document).trigger("error.ps.fileUpload",["format", fileAttached,this]);
                         continue;
                     }
 
