@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .inputfile {
@@ -102,4 +103,36 @@ li[data-item] .actions .item-action {
 .thumbnail-image img {    
     height: 60px;
     width: 60px;       
+}
+
+button.ps-btn-green {
+    background-color: #f6f6f6;
+    color: #41b320;
+    text-shadow: none;
+    max-width: 80%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+
+    font-family: Arial;
+    border: none;
+    border-top: .1em solid rgba(0,0,0,.05);
+    border-left: .1em solid rgba(0,0,0,.1);
+    border-bottom: .1em solid rgba(0,0,0,.2);
+    border-right: .1em solid rgba(0,0,0,.1);
+    border-radius: .2em;
+    background-image: linear-gradient(transparent 20%,rgba(0,0,0,.1));
+
+    margin-top: 20px;
+}
+
+button.ps-btn-green:disabled {
+    opacity: 0.9;
+    color: #ccc;
+    cursor: default;
 }

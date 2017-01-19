@@ -2,13 +2,28 @@
 (function(){
     document.addEventListener("DOMContentLoaded",function($event){                                
         //se cria um escuta para o error do fileUpload
-        $(document).on("error.ps.fileUpload",function($event,errorType,fileWithError,component){     
+        $(document).on("error.ps.fileUpload",function($event,errorType,fileWithError,component){
             const file = fileWithError ? fileWithError : void(0);
             createFileWithError(errorType,file,component);  
         })
-        
-        let idIncrementalError = 0;
 
+        $(document).on("sucess.ps.fileUpload", function($event,component){
+            debugger;
+            //updateStatusBtnSend();
+        })
+
+        // se cria a referença para o botão enviar
+        const btnSend = document.getElementById("btn-send-documents"),
+              listComponents = document.getElementById("");
+
+        if(btnSend){
+            btnSend.addEventListener("click", function(){
+                showMessageSuccess();
+            });
+        }
+
+        let idIncrementalError = 0;
+    
         const createFileWithError = function(errorType,file,component){
             
             if(!errorType || !file || !component )
@@ -50,12 +65,12 @@
             }            
 
             idIncrementalError++;
-                                                
-            //validamos a quantiade de arquivos anexados para habilitar/desabilitar o componente
-            component.isValid = isValidComponent(component);
-
-            //se desabilita se o componente não é válido. 
+    
+            //validamos a quantiade de arquivos anexados para habilitar/desabilitar o componente 
             component.element.disabled = !component.canAttachFile(component.maxAmountAllowed);
+
+            //se valida se o componente é válido.  
+            component.valid = component.isValid();
         };
 
         const removeItem =  function(key, component){
@@ -71,25 +86,21 @@
                 //se atualiza o contador de erros;
                 component.filesWithError--;            
             }
-            
+
             //validamos a quantiade de arquivos anexados para habilitar/desabilitar o componente            
             component.element.disabled = !component.canAttachFile(component.maxAmountAllowed);
+
+            //se valida se o componente é válido.  
+            component.valid = component.isValid();
         };    
-
-        const isValidComponent = function(component){
-            if(component.filesWithError + component.attachmentFiles.length >= component.maxAmountAllowed){                
-                return false;
-            }
-            return true;
-        };
-
+        
         const addMessageErrorToItem = function(itemList,errorType,component){
             if(!itemList || !errorType || !component){
                 throw Error("error na função addMessageErrorToItem");
             }
             
-            const msgErrorSize = "Seu arquivo ultrapassou o tamanho permitido, envie um arquivo de até " + component.maxSizeAllowed + "MB";
-            const msgErrorFormat = "Seu arquivo não está no formato correto (JPG, GIF, PNG e PDF)";
+            const msgErrorSize = "Seu arquivo ultrapassou o tamanho permitido, envie um arquivo de até " + component.maxSizeAllowed + "MB.";
+            const msgErrorFormat = "Seu arquivo não está no formato correto (JPG, GIF, PNG e PDF).";
             const _span = document.createElement("span");
             
             switch(errorType){
@@ -108,6 +119,18 @@
 
             //se adiciona a mensagem na lista
             itemList.appendChild(_span);
+        };
+
+        const validateComponents = function(){
+        };
+
+        const showMessageSuccess = function(){
+            debugger;
+            alert("arquivos enviados ...");
+        };
+
+        const updateStatusBtnSend = function(status){
+            btnSend.disabled = status;
         };
     })  
 }())

@@ -16,7 +16,8 @@
             this.maxAmountAllowed = this.options.amount ? parseInt(this.options.amount) : 3; // default 3 arquivos
             this.validFormats = ["image/jpeg","image/gif","image/png","application/pdf"];
             this.imageFormats = ["image/jpeg","image/gif","image/png"];
-            this.idItemKey = 0;            
+            this.idItemKey = 0;
+            this.valid = false;
 
             return this;            
         },
@@ -81,6 +82,10 @@
                     //adicionamos o arquivo na lista de arquivos anexados
                     this.attachmentFiles.push({key: key, file: fileAttached});
 
+                    //informamos o estado de sucesso ao anexar o arquivo
+                    //this: componente
+                    $(document).trigger("sucess.ps.fileUpload",[this]);
+
                     //criamos o template do arquivo anexado
                     const templateItem = this.createItem(key,fileAttached);
                                                                                 
@@ -108,8 +113,11 @@
                 //limpamos o valor do inputfile utilizado pelo componente ápos de anexar os arquivos.
                 this.element.value = "";
                 
-                //se desabilita se o componente não é válido. 
+                //validamos a quantiade de arquivos anexados para habilitar/desabilitar o componente
                 this.element.disabled = !this.canAttachFile(this.maxAmountAllowed);
+
+                //se valida se o componente é válido. 
+                this.valid = this.isValid();
             }
         },
 
@@ -149,33 +157,42 @@
 
                 //validamos a quantiade de arquivos anexados para habilitar/desabilitar o componente
                 this.element.disabled = !this.canAttachFile(this.maxAmountAllowed);
+
+                //se valida se o componente é válido.
+                this.valid = this.isValid();
             }                     
         },
                 
-        isAllowedSize : function(filesize){
+        isAllowedSize: function(filesize){
             const maxSizeinBytes = convertMegabytesToBytes(this.maxSizeAllowed);
             return maxSizeinBytes >= filesize;
         },
         
-        isAllowedType : function(typeFile){
+        isAllowedType: function(typeFile){
             return this.validFormats.some(function(allowedType,index,array){ return allowedType === typeFile});
         },
 
-        isImage : function(typeFile){
+        isImage: function(typeFile){
             return this.imageFormats.some(function(imageType,index,array){ return imageType === typeFile});
         },
 
-        isPDF : function(typeFile){
+        isPDF: function(typeFile){
             return typeFile == "application/pdf";
         },
         
-        canAttachFile : function(maxAmountAllowedComponent){      
+        canAttachFile: function(maxAmountAllowedComponent){      
             //se valida a quantidade de files anexados e a quantidade de files anexados com erro            
             return this.attachmentFiles.length + this.filesWithError < maxAmountAllowedComponent;
         },
 
-        getAllAttachmentFiles : function(){
+        getAllAttachmentFiles: function(){
             return this.attachmentFiles;
+        },
+
+        isValid: function(){
+            if(this.filesWithError == 0 && this.attachmentFiles.length >= 1)
+                return true;
+            return false;
         },
         
         /*
