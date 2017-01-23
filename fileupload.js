@@ -51,6 +51,12 @@
                         continue;
                     }
 
+                    //validamos se o arquivo anexado já existe na lista de arquivos anexados                     
+                    if(this.isAttached(fileAttached.name)){
+                        console.log("o arquivo " + fileAttached.name + " já foi anexado.");
+                        continue;
+                    }
+
                     //validamos se o arquivo anexado tem o peso permitido.
                     if(!this.isAllowedSize(fileAttached.size)){
                         console.log("o arquivo " + fileAttached.name + " não tem o peso permitido.");                    
@@ -81,22 +87,18 @@
                                                             
                     //adicionamos o arquivo na lista de arquivos anexados
                     this.attachmentFiles.push({key: key, file: fileAttached});
-
-                    //informamos o estado de sucesso ao anexar o arquivo
-                    //this: componente
-                    $(document).trigger("sucess.ps.fileUpload",[this]);
-
+                    
                     //criamos o template do arquivo anexado
                     const templateItem = this.createItem(key,fileAttached);
                                                                                 
                     //validamos se o arquivo anexado é uma imagem caso contrario não precisa
-                    //o uso do objeto FileReader.
+                    //o uso do objeto FileReader.renderItem                    
                     if(!this.isImage(fileAttached.type)){
-                        this.renderItem(self.options.target,templateItem, this.isPDF(fileAttached.type));
+                        this.renderItem(self.options.target,templateItem, this.isPDF(fileAttached.type), fileAttached);
                         continue;
                     }
 
-                    //criaçao da imagem do arquivo anexado.
+                    //criaçao da imagem do arquivo anexado.                    
                     const fileReader =  new FileReader();
 
                     fileReader.readAsDataURL(fileAttached);
@@ -105,10 +107,18 @@
                         //this.result: src da imagem
                         const image = createImage(this.result);
                         //adicionamos a imagem no template
-                        templateItem.querySelector("[data-item-img]").appendChild(image);                        
+                        templateItem.querySelector("[data-item-img]").appendChild(image);
+                        /*
+                        const optionVisualize = templateItem.querySelector("[data-visualize]");
+                        
+                        if(optionVisualize){
+                            optionVisualize.addEventListener("click",function(){                                
+                                openFileInNewWindow(image,true);
+                            })
+                        }*/
                     };
 
-                    this.renderItem(self.options.target,templateItem)
+                    this.renderItem(self.options.target,templateItem);
                 }
                 //limpamos o valor do inputfile utilizado pelo componente ápos de anexar os arquivos.
                 this.element.value = "";
@@ -118,6 +128,10 @@
 
                 //se valida se o componente é válido. 
                 this.valid = this.isValid();
+
+                //informamos o estado de sucesso ao anexar o arquivo
+                //this: componente
+                $(document).trigger("sucess.ps.fileUpload",[this]);
             }
         },
 
@@ -160,6 +174,8 @@
 
                 //se valida se o componente é válido.
                 this.valid = this.isValid();
+
+                $(document).trigger("removeItem.ps.fileUpload",[this]);
             }                     
         },
                 
@@ -179,8 +195,17 @@
         isPDF: function(typeFile){
             return typeFile == "application/pdf";
         },
+
+        isAttached: function(filename){
+            if(this.attachmentFiles.length > 0){
+                return this.attachmentFiles.some(function(attachmentFile,index, array){            
+                    return attachmentFile.file.name == filename
+                });
+            }
+            return false;
+        },
         
-        canAttachFile: function(maxAmountAllowedComponent){      
+        canAttachFile: function(maxAmountAllowedComponent){
             //se valida a quantidade de files anexados e a quantidade de files anexados com erro            
             return this.attachmentFiles.length + this.filesWithError < maxAmountAllowedComponent;
         },
@@ -199,7 +224,7 @@
         place : identificador do container onde renderizara o bloco documento anexado
         template : container do documento anexado.
         image: imagem que sera anexada */
-        renderItem: function(place,template,isPDF){
+        renderItem: function(place,template,isPDF,file){
             
             if(place && template){
                 const container = document.getElementById(place);
@@ -213,6 +238,15 @@
                         //se o container existe
                         if(containerImage)
                             containerImage.classList.add("pdf-file");
+                                                
+                        /*if(file){
+                            const optionVisualize = template.querySelector("[data-visualize]");
+
+                            if(optionVisualize)
+                                optionVisualize.addEventListener("click", function(){                                    
+                                    openFileInNewWindow(file,false);
+                                });
+                        } */                           
                     }
 
                     //se adiciona o item na lista de files anexados
@@ -255,6 +289,19 @@
         }        
     };
 
+    function openFileInNewWindow(file,isImage){
+        if(!file)
+            return;
+        
+        if(isImage){
+            const _window = window.open("");
+            _window.document.write(file.outerHTML);
+            return;
+        }
+
+        const _window = window.open(file.name);
+    };
+
     function convertMegabytesToBytes(sizeInMb){
         return sizeInMb * 1000000;
     };
@@ -275,7 +322,7 @@
     };
     
     //ativando os listeners do componente    
-    document.addEventListener("change",function($event){        
+    document.addEventListener("change",function($event){
         const target = $event.target;
         if(target && target.type == "file" && target.hasAttribute("data-fileupload")){
             const _self = target;            

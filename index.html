@@ -18,10 +18,10 @@
     </div>    
     <div class="component-fileupload">           
         <input type ="file" name="userDocument" id="userDocument" class = "inputfile"
-        data-target ="list-preview-files"    
+        data-target ="list-preview-files"
         data-id-Template = "data-template-fileUpload"
         data-amount = "2"        
-        data-fileupload 
+        data-fileupload
         multiple accept= ".gif,.jpg,.png,.pdf">
         <label for="userDocument">Procurar documentos</label>
         <span style="display:block;">Serão aceitos JPG, GIF, PNG e PDF de até 3 MB cada.</span>
@@ -43,7 +43,7 @@
         data-target ="list-preview-files2"        
         data-id-Template = "data-template-fileUpload"
         data-amount = "5"
-        data-fileupload 
+        data-fileupload
         multiple accept= ".gif,.jpg,.png,.pdf">
         <label for="userDocument2">Procurar documentos</label>
         <span style="display:block;">Serão aceitos JPG, GIF, PNG e PDF de até 3 MB cada.</span>
@@ -61,6 +61,7 @@
         <li data-item class="file">
             <div class="thumbnail-image" data-item-img>
                 <!-- img  -->
+                <!-- http://localhost:88/ps-viewReader/main.html -->
             </div>
             <div class="info-file">
                 <span data-item-filename></span>  <span data-item-size></span>
@@ -68,8 +69,8 @@
             <!--
             <div class="size" > </div>-->
             <div class="actions">
-                <a href="#" class="item-action icon-visualize" data-visualize>visualizar</a>
-                <a href="#" class="item-action icon-delete" data-delete>remover</a>
+                <a href="#" class="item-action icon-visualize" data-visualize><span>Visualizar</span></a>
+                <a href="#" class="item-action icon-delete" data-delete><span>Remover</span></a>
                 <!--<a href="#" class="icon-visualizar" data-delete>visualizar item</a> -->
             </div>
         </li>

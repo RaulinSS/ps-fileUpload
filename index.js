@@ -4,21 +4,25 @@
         //se cria um escuta para o error do fileUpload
         $(document).on("error.ps.fileUpload",function($event,errorType,fileWithError,component){
             const file = fileWithError ? fileWithError : void(0);
-            createFileWithError(errorType,file,component);  
+            createFileWithError(errorType,file,component);
+            btnSend.disabled = !validateComponents();
         })
 
-        $(document).on("sucess.ps.fileUpload", function($event,component){
-            debugger;
-            //updateStatusBtnSend();
-        })
+        $(document).on("sucess.ps.fileUpload", function($event,component){     
+            btnSend.disabled = !validateComponents();
+        });
 
-        // se cria a referença para o botão enviar
-        const btnSend = document.getElementById("btn-send-documents"),
-              listComponents = document.getElementById("");
+        $(document).on("removeItem.ps.fileUpload", function($event,component){            
+            btnSend.disabled  = !validateComponents();
+        });
+
+        // se cria a referença para o botão enviar        
+        const btnSend = document.getElementById("btn-send-documents");              
 
         if(btnSend){
             btnSend.addEventListener("click", function(){
-                showMessageSuccess();
+                if(validateComponents())
+                    showMessageSuccess();
             });
         }
 
@@ -42,10 +46,12 @@
             container.querySelector("[data-item-size]").innerHTML = file.formattedSize.join(" ");
 
             /* apagamos o botao visualizar quando é um arquivo de erro*/
+
+            /*
             const visualizeOption = container.querySelector("[data-visualize]");
 
             if(visualizeOption)
-                visualizeOption.parentElement.removeChild(visualizeOption);
+                visualizeOption.parentElement.removeChild(visualizeOption);*/
 
             /* se adiciona a mensagem de erro */            
             addMessageErrorToItem(itemList,errorType,component);
@@ -71,6 +77,8 @@
 
             //se valida se o componente é válido.  
             component.valid = component.isValid();
+
+            btnSend.disabled = !validateComponents();
         };
 
         const removeItem =  function(key, component){
@@ -92,6 +100,8 @@
 
             //se valida se o componente é válido.  
             component.valid = component.isValid();
+            
+            btnSend.disabled = !validateComponents();
         };    
         
         const addMessageErrorToItem = function(itemList,errorType,component){
@@ -122,15 +132,32 @@
         };
 
         const validateComponents = function(){
+            const listComponents = document.querySelectorAll("[data-fileupload]");       
+            let status = false;
+            
+            if(listComponents && listComponents.length > 0){
+                //arr: array
+                const arrComponents = [].slice.call(listComponents);
+                
+                status = arrComponents.every(function(component, index, array){                
+                    if(component.componentAttach){
+                        if(component.componentAttach.valid)
+                            return true;
+                    }
+                    return false;
+                })
+            }
+
+            return status;
         };
 
-        const showMessageSuccess = function(){
-            debugger;
+        const showMessageSuccess = function(){        
             alert("arquivos enviados ...");
         };
 
+        /*
         const updateStatusBtnSend = function(status){
             btnSend.disabled = status;
-        };
+        };*/
     })  
 }())

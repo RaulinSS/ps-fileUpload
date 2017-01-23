@@ -57,8 +57,8 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    min-height: 50px;
-    padding: 5px;
+    min-height: 50px;    
+    position: relative;
 }
 
 .list-preview-files li.error-file {
@@ -67,9 +67,20 @@
     margin-bottom: 30px;
 }
 
+.list-preview-files li.error-file .thumbnail-image:before{    
+    background-image: url("./PS-ibk-icon_img-broken-48px.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    border-right: 1px solid red;
+    box-sizing: border-box;
+    content: "";
+    display: inline-block;
+    height: 48px;
+    width: 48px;
+}
+
 .list-preview-files li.error-file .file-error-message{
     bottom: -20px;
-    color: red;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
     left: 0px;
@@ -87,12 +98,50 @@ span[data-item-size] {
 
 li[data-item] .actions {
     flex: 0 1 35%;
+    font-size: 13px;
     margin-right: 20px;
     text-align: right;
 }
 
 li[data-item] .actions .item-action {
-    padding: 0 5px;
+    color: #035ec7;
+    padding: 0 5px;    
+    text-decoration: none;
+    position: relative;
+}
+
+li[data-item] .actions .item-action:first-of-type {
+    margin-right: 35px;
+}
+
+li[data-item] .actions [data-delete]:before {
+    background-image: url("./PS-ibk-icon_remover.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    box-sizing: border-box;
+    content: "";
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    left: -22px;
+    top: 50%;
+    margin-top: -14px;
+}
+
+li[data-item] .actions [data-visualize]:before {
+    background-image: url("./PS-ibk-icon_visualizar.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    box-sizing: border-box;
+    content: "";
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    margin-top: -14px;
 }
 
 .thumbnail-image {
