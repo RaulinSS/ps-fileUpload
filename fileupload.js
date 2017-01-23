@@ -54,6 +54,10 @@
                     //validamos se o arquivo anexado já existe na lista de arquivos anexados                     
                     if(this.isAttached(fileAttached.name)){
                         console.log("o arquivo " + fileAttached.name + " já foi anexado.");
+                                                
+                        //trigger error
+                        //this: componente             
+                        $(document).trigger("repeatedItem.ps.fileUpload",[fileAttached,this]);
                         continue;
                     }
 
@@ -94,7 +98,7 @@
                     //validamos se o arquivo anexado é uma imagem caso contrario não precisa
                     //o uso do objeto FileReader.renderItem                    
                     if(!this.isImage(fileAttached.type)){
-                        this.renderItem(self.options.target,templateItem, this.isPDF(fileAttached.type), fileAttached);
+                        this.renderItem(self.options.target,templateItem, this.isPDF(fileAttached.type), fileAttached);                        
                         continue;
                     }
 
@@ -108,14 +112,14 @@
                         const image = createImage(this.result);
                         //adicionamos a imagem no template
                         templateItem.querySelector("[data-item-img]").appendChild(image);
-                        /*
+                        
                         const optionVisualize = templateItem.querySelector("[data-visualize]");
                         
                         if(optionVisualize){
-                            optionVisualize.addEventListener("click",function(){                                
+                            optionVisualize.addEventListener("click",function(){
                                 openFileInNewWindow(image,true);
                             })
-                        }*/
+                        }
                     };
 
                     this.renderItem(self.options.target,templateItem);
@@ -239,14 +243,14 @@
                         if(containerImage)
                             containerImage.classList.add("pdf-file");
                                                 
-                        /*if(file){
+                        if(file){
                             const optionVisualize = template.querySelector("[data-visualize]");
 
                             if(optionVisualize)
-                                optionVisualize.addEventListener("click", function(){                                    
-                                    openFileInNewWindow(file,false);
+                                optionVisualize.addEventListener("click", function(){                                                                    
+                                    createViewerPDF(file);
                                 });
-                        } */                           
+                        }                          
                     }
 
                     //se adiciona o item na lista de files anexados
@@ -299,11 +303,72 @@
             return;
         }
 
-        const _window = window.open(file.name);
+        const _window = window.open("");
+
+        if(_window){
+            _window.document.body.style.margin = "0px";
+            _window.document.body.appendChild(file);
+        }
+        else {
+            alert("desabilitar o bloqueador de pop-ups para poder visualizar o arquivo pdf selecionado.");
+        }
     };
 
     function convertMegabytesToBytes(sizeInMb){
         return sizeInMb * 1000000;
+    };
+
+    function createViewerPDF(attachFile){        
+        const fileReader = new FileReader();
+
+        fileReader.onload = function(){
+            const typedarray = new Uint8Array(this.result);
+            const container = document.createElement("div");
+            container.style.backgroundColor = "#ccc";
+            container.style.textAlign = "center";
+
+            PDFJS.getDocument(typedarray).then(function(pdf) {                
+                      //loop
+            for (let i = 1; i <= pdf.numPages; i++) {
+                pdf.getPage(i).then(function(page) {
+                const scale = 1.5;
+                const viewport = page.getViewport(scale);
+                const div = document.createElement("div");
+
+                // Set id attribute with page-#{pdf_page_number} format
+                div.setAttribute("id", "page-" + (page.pageIndex + 1));
+
+                // This will keep positions of child elements as per our needs
+                div.setAttribute("style", "position: relative");
+
+                // Append div within div#container
+                container.appendChild(div);
+                
+                const canvas = document.createElement("canvas");
+
+                div.appendChild(canvas);
+
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                // Render PDF page
+                page.render(renderContext);                                                     
+                })
+            }//end for                      
+                return;                    
+            }).then(function(){                  
+                setTimeout(function(){                    
+                    openFileInNewWindow(container,false);
+                },1000);
+            })
+        };
+
+        fileReader.readAsArrayBuffer(attachFile);
     };
     
     //engine do fileupload    

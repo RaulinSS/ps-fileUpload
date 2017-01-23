@@ -110,7 +110,7 @@ li[data-item] .actions .item-action {
     position: relative;
 }
 
-li[data-item] .actions .item-action:first-of-type {
+li[data-item] .actions [data-visualize] {
     margin-right: 35px;
 }
 
